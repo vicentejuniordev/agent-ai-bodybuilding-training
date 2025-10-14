@@ -1,9 +1,12 @@
 import { error } from "console";
-import fastify from "fastify";
+import fastify from "../node_modules/fastify/fastify";
+import { planRoutes } from "./routes/plan-gyn";
 
 const app = fastify({
     logger: true
 });
+
+app.register(planRoutes);
 
 app.listen({port: Number(process.env.PORT) || 3333, host: '0.0.0.0'})
 .then(()=>{
