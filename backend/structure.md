@@ -5,8 +5,7 @@
 - Nome
 - Idade
 - Peso
-- Quantidade de dias que treina na semana
-- Se apresenta alguma limitação física e qual?
-- Se apresenta alguma doença cardiorespiratória
+- Sexo
+- Qual o seu Objetivo?
 
 > Pegar os dados -> Processar com a IA -> Devolver ao front-end (WEB, MODILE)
