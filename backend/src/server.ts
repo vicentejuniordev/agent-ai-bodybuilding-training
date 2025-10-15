@@ -1,6 +1,6 @@
 import { error } from "console";
 import fastify from "../node_modules/fastify/fastify";
-import { planRoutes } from "./routes/plan-gyn";
+import { planRoutes } from "./routes/plan-gym";
 
 const app = fastify({
     logger: true
