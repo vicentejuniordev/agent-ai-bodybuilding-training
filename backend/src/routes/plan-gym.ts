@@ -1,7 +1,5 @@
-import { resolvePtr } from "dns";
 import type { FastifyInstance } from "fastify";
 import { GymPlanSChema } from "../types";
-import { error } from "console";
 import { generateGymPlan } from "../agent";
 
 
