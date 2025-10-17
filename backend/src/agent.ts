@@ -1,19 +1,30 @@
 import type { GymPlanRequest } from "./types";
 import fs from 'fs';
-import { GoogleGenAI } from "@google/genai";
+import OpenAI from "openai";
+import { buildSystemDocsPrompt, buildSystemPrompt, buildSystemUserPrompt } from "./prompt";
 
-const apiKey = process.env.API_KEY;
-
-if (!apiKey) {
-    throw new Error('API_KEY environment variable is required');
+const client = new OpenAI({
+    apiKey: process.env.GEMINI_API_KEY as string,
+    baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/'
 }
-const client = new GoogleGenAI({
-    apiKey
-});
-
-export async function generateGymPlan(input:GymPlanRequest) {
+)
+export async function* generateGymPlan(input:GymPlanRequest) {
     const dataTec = fs.readFileSync('knowledge/gym-ai-diretrizes.md', 'utf-8');
-    const response = await client.models.generateContent({model: 'gemini-2.5-flash',contents: "Explain how AI works in a few words"})
-    console.log(response.text);
+    
+    const stream = await client.chat.completions.create({
+        model: 'gemini-2.5-flash',
+        messages: [
+            {"role": "system", content: buildSystemPrompt()},
+            {"role": "user", content: buildSystemUserPrompt(input)}
+        ],
+        temperature: 0.6,
+        stream: true //Faz com que a IA não retorne o texto de uma vez, ele vai processando e enviando.
+    }
+    )
+    
+    for await (const chunk of stream){
+        const delta = chunk.choices[0]?.delta.content; //Pega apenas o conteúdo da chunk (pedaço de código que está sendo executado).
+        if(delta) yield delta; //Enquanto estiver vindo dados ele para a execução da função e retorna.
+    }
     return 'OK'
 }
